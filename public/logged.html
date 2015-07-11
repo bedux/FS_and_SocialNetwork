@@ -1,0 +1,56 @@
+<html>
+        <link rel="stylesheet" href="./stylesheets/style.css">
+
+    <script>
+
+    function getURLParameter(name) {
+  return decodeURIComponent((new RegExp('[?|&]' + name + '=' + '([^&;]+?)(&|#|;|$)').exec(location.search)||[,""])[1].replace(/\+/g, '%20'))||null
+}
+
+
+console.log();
+
+function loadXMLDoc(data,div)
+{
+var xmlhttp;
+if (window.XMLHttpRequest)
+  {// code for IE7+, Firefox, Chrome, Opera, Safari
+  xmlhttp=new XMLHttpRequest();
+  }
+else
+  {// code for IE6, IE5
+  xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+  }
+xmlhttp.onreadystatechange=function()
+  {
+  if (xmlhttp.readyState==4 && xmlhttp.status==200)
+    {
+    document.getElementById(div).innerHTML=xmlhttp.responseText;
+    console.log(xmlhttp.responseText);
+    }
+  }
+xmlhttp.open("GET",data+getURLParameter("user"),true);
+xmlhttp.send();
+}
+</script>
+<body >
+  
+<h4> Friend List </h4>
+  <div  id = 'myDivFriend'>
+  <script type="text/javascript">
+        loadXMLDoc('login/friends/',  'myDivFriend');
+  </script>
+
+  </div>
+
+  <h4> Group List </h4>
+  <div  id = 'myDivGroup'>
+
+   <script type="text/javascript">
+        loadXMLDoc('login/groups/','myDivGroup');
+  </script>
+
+  </div>
+</body>
+    
+</html>

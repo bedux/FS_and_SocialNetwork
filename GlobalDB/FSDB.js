@@ -127,6 +127,13 @@ module.exports = {
 
 
                     }
+                    else if(mod[paramKey+"_Type"].indexOf("file")!=-1){
+                        console.log(path+"/"+mod[paramKey]);
+                            fs.open(path+"/"+mod[paramKey],"w+",function(err,fd){
+                                    fs.write(fd,params[paramKey]);
+
+                          });   
+                    }
 
 
                 }
@@ -134,6 +141,12 @@ module.exports = {
 
 
 
+    },
+
+    computePath:function(key){
+        return generateNum(key)+"/"+key;
+
     }
+
 
 }

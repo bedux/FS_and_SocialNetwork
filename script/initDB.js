@@ -1,13 +1,17 @@
 
-
+var fs = require('fs')
 
 var UserModel = require('../GlobalDB/User').User;
 var FriendshipModel = require('../GlobalDB/Friendship').Friendship;
 var UserGroup = require('../GlobalDB/UserGroup').UserGroup;
 var Group = require('../GlobalDB/Group').Group;
-var dbName = "DatabaseItalia";
 
+var dbName = "IT";
+if(!fs.existsSync(dbName)){
+        fs.mkdirSync(dbName);
+    }
 //set the db name
+ 
 
 
 var DB = require('../GlobalDB/FSDB');
@@ -57,34 +61,35 @@ function addUserToGroup(name1,group1){
 
 
 //create 21 user
-for(var name =0; name <=200;name++){
+for(var name =0; name <=20;name++){
     DB.addTableDB("User","User"+name);
+    DB.addTableInfo("User","User"+name,{pwd:"123123123"});
 }
 
 //create 10 group
-for(var name =0; name <=100;name++){
+for(var name =0; name <=10;name++){
     DB.addTableDB("Group","Group"+name);
 }
 
 //create 40 random friendship
-for(var n = 0;n<100;n++){
-    var u1= Math.floor((Math.random() * 200));
-    var u2= Math.floor((Math.random() * 200));
+for(var n = 0;n<10;n++){
+    var u1= Math.floor((Math.random() * 20));
+    var u2= Math.floor((Math.random() * 20));
     if(u1!=u2){
 
         createFriendship("User"+u1,"User"+u2);
     }
 }
 //create 10 different froup
-for(var n = 0;n<50;n++){
+for(var n = 0;n<5;n++){
         DB.addTableDB("Group","Group"+n);
 }
 
 
 //assign random group for each users
-for(var name =0; name <=200;name++){
+for(var name =0; name <=20;name++){
     for(var i=0;i<10;i++) {
-        var u2 = Math.floor((Math.random() * 50));
+        var u2 = Math.floor((Math.random() * 5));
         addUserToGroup("User" + name, "Group" + u2);
     }
 

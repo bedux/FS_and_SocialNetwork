@@ -15,6 +15,12 @@ var User_mod = {
     info:"Info.json",
     info_Type:"file",
 
+    profileIMG:"ioSonBello.pnb",
+    profileIMG_Type:"file",
+
+    pwd:"pass.json",
+    pwd_Type:"file",
+
     groups:"groups",
     groups_Type:"Array PT_UserGroup"
 
