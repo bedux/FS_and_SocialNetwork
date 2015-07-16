@@ -31,18 +31,36 @@ router.get('/', function(req, res, next) {
 
 
 router.post('/', function(req, res, next) {
+    
+    console.log(req.body.user,req.body.pwd);
 	query.logIn(req.body.user,req.body.pwd,function(resp){
-			if(resp){
-
-				res.redirect("logged.html?user="+req.body.user);
+        console.log(resp);
+			if(resp.status=="Done"){
+				//res.redirect("logged.html?user="+req.body.user);
+                res.json({status:"logged"});
 			}else{
-
-				res.redirect("/");
+                res.json({status:"NoLogged"})
 			}
-
 	});
 
 });
+
+router.post('/add', function(req, res, next) {
+    
+    console.log(req.body.user,req.body.pwd);
+	query.singIn(req.body.user,req.body.pwd,function(resp){
+        console.log(resp);
+			if(resp.status=="Done"){
+				//res.redirect("logged.html?user="+req.body.user);
+                res.json({status:"logged"});
+			}else{
+                res.json({status:"NoLogged"})
+			}
+	});
+
+});
+
+
 
 
 

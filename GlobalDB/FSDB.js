@@ -22,6 +22,9 @@ function createDir(name,del){
     
     if(!fs.existsSync(name)){
         fs.mkdirSync(name);
+        return true;
+    }else{
+        return false;
     }
 }
 
@@ -33,8 +36,11 @@ function createDirWithBucket(path,key){
         if(!fs.existsSync(path+num)){
             createDir(path+num);
         }
-        createDir(path+num+"/"+key);
-        return path+num+"/"+key+"/";
+        if(createDir(path+num+"/"+key)){
+            return path+num+"/"+key+"/";
+        }else{
+            return false;
+        }
     }
 
 
@@ -77,6 +83,9 @@ module.exports = {
         }
 
         var newRoot = createDirWithBucket(moduleList[name].root,key);
+        if(newRoot==false){
+            return false;
+        }
 
         for(var  a in moduleList[name]){
             if(a!="key"&& a!="root" && a.indexOf("Type")==-1){

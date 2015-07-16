@@ -26,20 +26,39 @@ exports.logIn = function(name,pws,callback){
 		if(exist){
 			console.log(UserModel.root+db.computePath(name)+"/"+UserModel.pwd);
 			fs.readFile(UserModel.root+db.computePath(name)+"/"+UserModel.pwd,"utf8" ,function (err, data) {
-			  if (err) throw err;
+			  if (err) callback({status:"NoCredential"});
 			  	if(data==pws){
 
-			  		callback(true);
+			  		callback({status:"Done"});
 
 			  	}else{
-			  		callback(false);
+			  		callback({status:"NoCredential"});
 			  	}
 
 			});
-		}
+		}else{
+            
+            callback({status:"NoCredential"});
+        }
 	});
 
 }
+
+exports.singIn = function(name,pws,callback){
+
+    if(db.addTableDB("User",name)!=false){ 
+        
+        db.addTableInfo("User",name,{pwd:pws});
+        callback({status:"Done"});
+                                         
+    }else{
+        callback({status:"ArleadyExists"});
+
+    }
+
+}
+
+
 
 
 exports.getUserFriend= function(name,callback){

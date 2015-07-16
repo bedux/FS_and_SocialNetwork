@@ -1,19 +1,33 @@
-<html>
-        <link rel="stylesheet" href="./stylesheets/style.css">
+<html ng-app="myApp">
+       
+  <head>  
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script src="scripts/angular.min.js"></script>
+    <link rel="stylesheet" href="stylesheets/mdl/material.min.css">
+    <script src="stylesheets/mdl/material.min.js"></script>
+    <link rel="stylesheet" href="stylesheets/style.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <script src="bower_components/angular-route/angular-route.min.js"></script>
+    <link rel="stylesheet" href="stylesheets/forumStyle.css">
+    
+
+ 
+    <!-- angular controllers  -->
+    <script src="controllers/mainCtrl.js"></script>
+    <script src="controllers/forumPageCTR.js"></script>
+      <script src="controllers/logInCNTR.js"></script>
+      <script src="controllers/singUpCNTR.js"></script>
 
     
+    </head>  
+    
+    
 <body >
-    <div class="login">
-        <form width="100%" method="POST" action="login">
-            First name:<br>
-            <input  class="inp" type="text" name="user">
-            <br>
-            Password <br>
-            <input class="inp" type="text" name="pwd">
-            <hr>
-            <input  class="inp" type="submit" >
-        </form>
-    </div>
+    
+      <div ng-view class="ngWiewMy">
+
+      </div>
+    
 </body>
     
 </html>
