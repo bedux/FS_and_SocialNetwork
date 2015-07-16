@@ -260,3 +260,15 @@ aside{
 }
 
 
+
+.userFriends {
+    display:flex;
+       flex-direction: row;
+
+      flex-wrap: wrap;
+
+}
+
+.userFreiendMargin {
+    margin: 10px;
+}

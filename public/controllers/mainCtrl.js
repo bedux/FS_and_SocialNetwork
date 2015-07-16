@@ -16,9 +16,9 @@ myApp.config( function($routeProvider) {
 
       }). 
         when('/user/:id', {
-        templateUrl: 'module/user.html',
+        templateUrl: 'module/userHome.html',
         //controller: 'PhoneListCtrl'
-       controller: 'logInCNTR'
+       controller: 'userCNTR'
 
       }).
         otherwise({

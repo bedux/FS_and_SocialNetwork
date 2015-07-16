@@ -1,0 +1,37 @@
+
+
+
+
+<div ng-controller="userCNTR">
+    <h1>{{data.name}} </h1>
+
+    <div style="margin:30px;">
+    <h3>Friends List</h3>
+
+        <div class="userFriends">
+            <div class="userFreiendMargin " ng-repeat="n in data.friends" >
+               {{n.name}}
+            </div>
+      </div>
+        
+        
+    </div>
+    
+    
+    <br/>
+    
+    <hr style="margin:30px;">
+
+    <div style="margin:30px;">  
+    <h3>Group List</h3>
+     <div class="userFriends">
+            <div class="userFreiendMargin " ng-repeat="n in data.groups" >
+               {{n.name}}
+            </div>
+      </div>
+</div>
+
+
+    
+
+
