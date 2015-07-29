@@ -6,7 +6,7 @@ var FriendshipModel = require('../GlobalDB/Friendship').Friendship;
 var UserGroup = require('../GlobalDB/UserGroup').UserGroup;
 var Group = require('../GlobalDB/Group').Group;
 
-var dbName = "IT";
+var dbName = "UK";
 if(!fs.existsSync(dbName)){
         fs.mkdirSync(dbName);
     }
@@ -94,36 +94,37 @@ for(var i=0;i<300;i++){
 
 }
 
-//create 10 group
-for(var name =0; name <=10;name++){
-    DB.addTableDB("Group","Group"+name);
-}
+// //create 10 group
+// for(var name =0; name <=10;name++){
+//     DB.addTableDB("Group","Group"+name);
+// }
 
-//create 40 random friendship
-for(var n = 0;n<10;n++){
-    var u1= Math.floor((Math.random() * 20));
-    var u2= Math.floor((Math.random() * 20));
-    if(u1!=u2){
+// //create 40 random friendship
+// for(var n = 0;n<10;n++){
+//     var u1= Math.floor((Math.random() * 20));
+//     var u2= Math.floor((Math.random() * 20));
+//     if(u1!=u2){
 
-        createFriendship("User"+u1,"User"+u2);
-    }
-}
-//create 10 different froup
-for(var n = 0;n<5;n++){
-        DB.addTableDB("Group","Group"+n);
-}
+//         createFriendship("User"+u1,"User"+u2);
+//     }
+// }
+// //create 10 different froup
+// for(var n = 0;n<5;n++){
+//         DB.addTableDB("Group","Group"+n);
+// }
 
 
-//assign random group for each users
-for(var name =0; name <=20;name++){
-    for(var i=0;i<10;i++) {
-        var u2 = Math.floor((Math.random() * 5));
-        addUserToGroup("User" + name, "Group" + u2);
-    }
+// //assign random group for each users
+// for(var name =0; name <=20;name++){
+//     for(var i=0;i<10;i++) {
+//         var u2 = Math.floor((Math.random() * 5));
+//         addUserToGroup("User" + name, "Group" + u2);
+//     }
 
-}
+// }
 
 
 
 //DB.searchInIndex("User","User1");
 
+console.log("done");

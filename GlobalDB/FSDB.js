@@ -202,9 +202,12 @@ module.exports = {
                     else if(mod[paramKey]["type"].indexOf("file")!=-1){
                       //  console.log(path+"/"+mod[paramKey]["name"]);
                             fs.open(path+"/"+mod[paramKey]["name"],"w+",function(err,fd){
-                                    fs.write(fd,params[paramKey]);
-                                    fs.close(fd,function(err){
-                                    })
+                                    fs.write(fd,params[paramKey],function(){
+
+                                          fs.close(fd,function(){
+                                          });
+                                    });
+                                  
 
                           });       
                     }
