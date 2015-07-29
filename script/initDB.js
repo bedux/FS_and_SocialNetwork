@@ -13,8 +13,9 @@ if(!fs.existsSync(dbName)){
 //set the db name
  
 
-
 var DB = require('../GlobalDB/FSDB');
+DB.makeIndex("userName","string");
+
 DB.dbName(dbName);
 DB.addModuleDB(UserModel,"User");
 
@@ -26,28 +27,35 @@ DB.addModuleDB(Group,"Group");
 
 
 
+
+
 function createFriendship(name1,name2){
 //create friendship
-    DB.addTableDB("Friendship",name1+name2);
+console.log(DB.addTableDB("Friendship",name1+name2),"asd");
+    if(DB.addTableDB("Friendship",name1+name2)!=false){
     //for create a friendship 2->n
     DB.addTableInfo("User",name1,{"friends":name1+name2});
 
     DB.addTableInfo("User",name2,{"friends":name1+name2});
 
     DB.addTableInfo("Friendship",name1+name2,{user1:name1,user2:name2});
+    }
 
 }
 
 
 function addUserToGroup(name1,group1){
     //create a user group
-    DB.addTableDB("UserGroup",name1+group1);
 
-    DB.addTableInfo("UserGroup",name1+group1,{user:name1,group:group1});
+    if(DB.addTableDB("UserGroup",name1+group1)!=false){
 
-    DB.addTableInfo("Group",group1,{userGroup:name1+group1});
 
-    DB.addTableInfo("User",name1,{groups:name1+group1});
+        DB.addTableInfo("UserGroup",name1+group1,{user:name1,group:group1});
+
+        DB.addTableInfo("Group",group1,{userGroup:name1+group1});
+
+        DB.addTableInfo("User",name1,{groups:name1+group1});
+    }
 
 }
 
@@ -62,8 +70,10 @@ function addUserToGroup(name1,group1){
 
 //create 21 user
 for(var name =0; name <=20;name++){
-    DB.addTableDB("User","User"+name);
-    DB.addTableInfo("User","User"+name,{pwd:"123123123"});
+
+    if(DB.addInIndex("userName",DB.addTableDB("User","User"+name),"User"+name)!=false){
+       DB.addTableInfo("User","User"+name,{pwd:"123123123"});
+    }
 }
 
 //create 10 group
@@ -97,6 +107,6 @@ for(var name =0; name <=20;name++){
 
 
 
-
+DB.searchInIndex("User","User1");
 
 

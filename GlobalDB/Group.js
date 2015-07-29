@@ -9,14 +9,11 @@ var Group_mod = {
 
     root:"./Groups/",
 
-    key:"",
-    key_Type:"String",
+    key:{name:"",type:"string",index:["a1"]},
 
-    userGroup:"users",
-    userGroup_Type:"Array PT_UserGroup",
+    userGroup:{name:"users",type:"Array PT_UserGroup"},
 
-    info:"Info.json",
-    info_Type:"file"
+    info:{name:"info.json",type:"file"}
 
 };
 

@@ -8,20 +8,16 @@ var Friendship_mod={
     root:"./Friendships/",
 
 
-    key:"",
-    key_Type:"String",
+    key:{name:"",type:"string",index:["a1"]},
+   
 
 
-    user1:"",
-    user1_Type:"PT_User",
+    user1:{name:"user1",type:"PT_User"},
 
 
-    user2:"",
-    user2_Type:"PT_User",
+    user2:{name:"user2",type:"PT_User"},
 
-    info:"info.json",
-    info_Type:"file"
-
+    info:{name:"info.json",type:"file"}
 
 };
 

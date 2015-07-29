@@ -6,17 +6,13 @@ var UserGroupMod = {
 
     root:"./UserGroup/",
 
-    key:"",
-    key_Type:"String",
+    key:{name:"",type:"string",index:["a1"]},
 
-    user:"user",
-    user_Type:"PT_User",
+    user:{name:"user",type:"PT_User"},
 
-    group:"group",
-    group_Type:"PT_Group",
+    group:{name:"group",type:"PT_Group"},
 
-    info:"Info.json",
-    info_Type:"file"
+    info:{name:"info.json",type:"file"}
     
 
 };

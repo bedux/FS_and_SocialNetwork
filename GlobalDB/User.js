@@ -6,23 +6,18 @@ var User_mod = {
 
     root:"./Users/",
 
-    key:"",
-    key_Type:"String",
+    key:{name:"",type:"string",index:["a1"]},
 
-    friends:"friends",
-    friends_Type:"Array PT_Friendship",
+    friends:{name:"friends",type:"Array PT_Friendship"},
+   // friends_Type:"Array PT_Friendship",
 
-    info:"Info.json",
-    info_Type:"file",
+    info:{name:"Info.json",type:"file"},
+    //info_Type:"file",
 
-    profileIMG:"ioSonBello.pnb",
-    profileIMG_Type:"file",
+   
+    pwd:{name:"pass.json",type:"file"},
 
-    pwd:"pass.json",
-    pwd_Type:"file",
-
-    groups:"groups",
-    groups_Type:"Array PT_UserGroup"
+    groups:{name:"groups",type:"Array PT_UserGroup"},
 
 };
 

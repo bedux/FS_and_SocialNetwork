@@ -20,12 +20,16 @@ function getDirectories(srcpath) {
 
 
 
+
+
+
 exports.logIn = function(name,pws,callback){
-	fs.exists(UserModel.root+db.computePath(name),function(exist){
-		console.log(exist);
-		if(exist){
-			console.log(UserModel.root+db.computePath(name)+"/"+UserModel.pwd);
-			fs.readFile(UserModel.root+db.computePath(name)+"/"+UserModel.pwd,"utf8" ,function (err, data) {
+
+	var res = db.searchInIndex("User",name);
+	console.log(res);
+	if(res.length>0){
+			console.log(res[0]+UserModel.pwd["name"]);
+			fs.readFile(res[0]+UserModel.pwd["name"],"utf8" ,function (err, data) {
 			  if (err) callback({status:"NoCredential"});
 			  	if(data==pws){
 
@@ -40,7 +44,6 @@ exports.logIn = function(name,pws,callback){
             
             callback({status:"NoCredential"});
         }
-	});
 
 }
 
@@ -58,11 +61,13 @@ exports.singIn = function(name,pws,callback){
 
 }
 
-
-
-
 exports.getUserFriend= function(name,callback){
-	var pathh = UserModel.root+db.computePath(name)+"/"+UserModel.friends;
+	var res = db.searchInIndex("User",name);
+	if(res==false){
+		callback({error:"Not user"});
+		return;
+	}
+	var pathh = res[0]+UserModel.friends["name"];
 	var fU = fs.readdirSync(pathh);
 	var res= [];
 	for(var f=0;f<fU.length;f++){
@@ -78,7 +83,12 @@ exports.getUserFriend= function(name,callback){
 }
 
 exports.getUserGroups= function(name,callback){
-	var pathh = UserModel.root+db.computePath(name)+"/"+UserModel.groups;
+	var res = db.searchInIndex("User",name);
+	if(res==false){
+		callback({error:"Not user"});
+		return;
+	}
+	var pathh = res[0]+UserModel.groups["name"];
 	var fU = fs.readdirSync(pathh);
 	var res= [];
 	for(var f=0;f<fU.length;f++){
