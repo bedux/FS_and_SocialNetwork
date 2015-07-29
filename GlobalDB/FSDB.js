@@ -2,6 +2,9 @@ var fs = require('fs');
 var rmdir = require('rimraf');
 var crypto = require('crypto');
 var shasum = crypto.createHash('sha1');
+var wrench = require('wrench'),
+    util = require('util');
+    var recursive = require('recursive-readdir');
 
 var moduleList = [];
 var indexesList = [];
@@ -27,7 +30,7 @@ function generateNum(num){
 
 function computePath(key){
         
-        console.log("compute payh ",key)
+        //console.log("compute payh ",key)
         return generateNum(key)+"/"+key;
 
 }
@@ -43,7 +46,7 @@ function createDir(name,del){
 }
 
 function createDirWithBucket(path,key){
-        console.log(" createDirWithBucket ",key,path)
+     //   console.log(" createDirWithBucket ",key,path)
 
 
         var num =generateNum(key)
@@ -65,7 +68,7 @@ function createSymLink(dest,source,type){
     var absolutePath = __dirname.replace("/GlobalDB","/");
     source=source.replace("./",absolutePath);
     dest=dest.replace("./",absolutePath);
-            console.log(dest,source);
+           // console.log(dest,source);
 
     if(fs.existsSync(source)){
 
@@ -135,7 +138,7 @@ module.exports = {
         for(var inMo in moduleList[name]["key"]["index"]){
 
             module.exports.makeIndex(moduleList[name]["key"]["index"][inMo],moduleList[name]["key"]["type"]);
-            console.log(key);
+          //  console.log(key);
             module.exports.addInIndex(moduleList[name]["key"]["index"][inMo],newRoot,key);
         }
 
@@ -145,7 +148,13 @@ module.exports = {
 
                 if(moduleList[name][a]["type"]=="file"){
                    // console.log("File");
-                    fs.open(newRoot+moduleList[name][a]["name"],"w+");
+                    fs.open(newRoot+moduleList[name][a]["name"],"w+",function(err,fd){
+
+                        fs.close(fd,function(){
+
+                        });
+                    });
+
 
                 }else  if(moduleList[name][a]["type"].indexOf("Array")!=-1){
                     createDir(newRoot+moduleList[name][a]["name"],false);
@@ -191,11 +200,13 @@ module.exports = {
 
                     }
                     else if(mod[paramKey]["type"].indexOf("file")!=-1){
-                        console.log(path+"/"+mod[paramKey]["name"]);
+                      //  console.log(path+"/"+mod[paramKey]["name"]);
                             fs.open(path+"/"+mod[paramKey]["name"],"w+",function(err,fd){
                                     fs.write(fd,params[paramKey]);
+                                    fs.close(fd,function(err){
+                                    })
 
-                          });   
+                          });       
                     }
 
 
@@ -251,7 +262,37 @@ module.exports = {
             }
 
 
+    },
+    getAllFromKey: function(indexName,key,callback){
+        var path = "./indexes/"+indexName;
+
+                for(var i = 0; i < key.length;i++){
+                    path+="/"+key[i]
+                }
+
+                   // console.log(path);
+                    var allFiles = [];
+                     recursive(path,function(err,data){
+                            for(var d in data){
+
+                                var realPath = fs.readlinkSync(data[d]);
+
+                                 var type = realPath.substr(realPath.indexOf("/"+dbName+"/")+("/"+dbName+"/").length,realPath.length);
+
+                                 type = type.substr(0,type.indexOf("/"));
+                                 data[d]={path:realPath,type:type};
+
+                            }
+                            callback(data);
+
+                     })
+                   
+                
+                return false;
+
+
     }
+
 
 
 

@@ -82,6 +82,13 @@ exports.getUserFriend= function(name,callback){
 	callback(res);
 }
 
+exports.searchIndex= function(name,index,callback){
+
+	db.getAllFromKey(index,name,callback);
+}
+
+
+
 exports.getUserGroups= function(name,callback){
 	var res = db.searchInIndex("User",name);
 	if(res==false){

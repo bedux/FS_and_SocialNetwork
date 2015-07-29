@@ -31,7 +31,6 @@ DB.addModuleDB(Group,"Group");
 
 function createFriendship(name1,name2){
 //create friendship
-console.log(DB.addTableDB("Friendship",name1+name2),"asd");
     if(DB.addTableDB("Friendship",name1+name2)!=false){
     //for create a friendship 2->n
     DB.addTableInfo("User",name1,{"friends":name1+name2});
@@ -59,6 +58,17 @@ function addUserToGroup(name1,group1){
 
 }
 
+function makeid()
+{
+    var text = "";
+    var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+
+    for( var i=0; i < Math.random()*15+2; i++ )
+        text += possible.charAt(Math.floor(Math.random() * possible.length));
+
+    return text;
+}
+
 ////For create Users
 //DB.addTableDB("User","MarcoBedulli");
 //
@@ -71,9 +81,17 @@ function addUserToGroup(name1,group1){
 //create 21 user
 for(var name =0; name <=20;name++){
 
-    if(DB.addInIndex("userName",DB.addTableDB("User","User"+name),"User"+name)!=false){
+    if(DB.addTableDB("User","User"+name)!=false){
        DB.addTableInfo("User","User"+name,{pwd:"123123123"});
     }
+}
+for(var i=0;i<300;i++){
+
+    var name = makeid();
+     if(DB.addTableDB("User",name)!=false){
+       DB.addTableInfo("User",name,{pwd:"123123123"});
+    }
+
 }
 
 //create 10 group
@@ -107,6 +125,5 @@ for(var name =0; name <=20;name++){
 
 
 
-DB.searchInIndex("User","User1");
-
+//DB.searchInIndex("User","User1");
 

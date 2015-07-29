@@ -6,7 +6,7 @@ var User_mod = {
 
     root:"./Users/",
 
-    key:{name:"",type:"string",index:["a1"]},
+    key:{name:"",type:"string",index:["a1","name"]},
 
     friends:{name:"friends",type:"Array PT_Friendship"},
    // friends_Type:"Array PT_Friendship",

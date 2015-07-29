@@ -9,7 +9,7 @@ var Group_mod = {
 
     root:"./Groups/",
 
-    key:{name:"",type:"string",index:["a1"]},
+    key:{name:"",type:"string",index:["a1","name"]},
 
     userGroup:{name:"users",type:"Array PT_UserGroup"},
 
