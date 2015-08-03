@@ -5,6 +5,7 @@ var UserModel = require('../GlobalDB/User').User;
 var FriendshipModel = require('../GlobalDB/Friendship').Friendship;
 var UserGroup = require('../GlobalDB/UserGroup').UserGroup;
 var Group = require('../GlobalDB/Group').Group;
+var query = require('../script/query');
 
 var dbName = "UK";
 if(!fs.existsSync(dbName)){
@@ -58,12 +59,36 @@ function addUserToGroup(name1,group1){
 
 }
 
+function makeMail(){
+    var text = "";
+    var possible = "ABCDEFGHIJKLMNOPQRSTUVZ1234567890";
+    var possibleMail = ["gmail","yahoo","hotmail","usi"];
+    var possiblePref = ["it","com","ch","us","cn"];
+
+    for( var i=0; i < Math.random()*15+2; i++ )
+        text += possible.charAt(Math.floor(Math.random() * possible.length));
+
+    return text+"@"+possibleMail[Math.floor(Math.random())*possibleMail.length]+"."+possiblePref[Math.floor(Math.random())*possiblePref.length];
+
+}
+
 function makeid()
 {
     var text = "";
-    var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+    var possible = "ABCDEFGHIJKLMNOPQRSTUVZ1234567890";
 
     for( var i=0; i < Math.random()*15+2; i++ )
+        text += possible.charAt(Math.floor(Math.random() * possible.length));
+
+    return text;
+}
+
+function makeKey()
+{
+    var text = "";
+    var possible = "ABCDEFGHIJKLMNOPQRSTUVZ1234567890";
+
+    for( var i=0; i < 15; i++ )
         text += possible.charAt(Math.floor(Math.random() * possible.length));
 
     return text;
@@ -79,52 +104,21 @@ function makeid()
 
 
 //create 21 user
-for(var name =0; name <=20;name++){
-
-    if(DB.addTableDB("User","User"+name)!=false){
-       DB.addTableInfo("User","User"+name,{pwd:"123123123"});
-    }
-}
-for(var i=0;i<300;i++){
-
-    var name = makeid();
-     if(DB.addTableDB("User",name)!=false){
-       DB.addTableInfo("User",name,{pwd:"123123123"});
-    }
-
-}
-
-// //create 10 group
-// for(var name =0; name <=10;name++){
-//     DB.addTableDB("Group","Group"+name);
-// }
-
-// //create 40 random friendship
-// for(var n = 0;n<10;n++){
-//     var u1= Math.floor((Math.random() * 20));
-//     var u2= Math.floor((Math.random() * 20));
-//     if(u1!=u2){
-
-//         createFriendship("User"+u1,"User"+u2);
-//     }
-// }
-// //create 10 different froup
-// for(var n = 0;n<5;n++){
-//         DB.addTableDB("Group","Group"+n);
-// }
-
-
-// //assign random group for each users
 // for(var name =0; name <=20;name++){
-//     for(var i=0;i<10;i++) {
-//         var u2 = Math.floor((Math.random() * 5));
-//         addUserToGroup("User" + name, "Group" + u2);
-//     }
 
+//     if(DB.addTableDB("User","User"+name)!=false){
+//        DB.addTableInfo("User","User"+name,{pwd:"123123123"});
+//     }
 // }
 
+    //  if(DB.addTableDB("User","123")!=false){
+    //    DB.addTableInfo("User","123",{pwd:"123123123",info:JSON.stringify({name:"asd",mail:makeMail()})});
+    // }
 
 
-//DB.searchInIndex("User","User1");
+    //    DB.addTableInfo("User","123",{pwd:"123123123",info:JSON.stringify({mail:makeMail()})});
+    
+    
+    
 
-console.log("done");
+

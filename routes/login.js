@@ -6,7 +6,6 @@ var query = require('../script/query');
 
 /* GET home page. */
 router.get('/friends/:current', function(req, res, next) {
-	console.log("sono qui");
   	query.getUserFriend(req.params.current,function(data){
   	res.json({friends:data});
   });
@@ -14,7 +13,6 @@ router.get('/friends/:current', function(req, res, next) {
 });
 
 router.get('/groups/:current', function(req, res, next) {
-	console.log("sono qui");
   	query.getUserGroups(req.params.current,function(data){
   	res.json({groups:data});
   });
@@ -23,43 +21,66 @@ router.get('/groups/:current', function(req, res, next) {
 
 
 
-router.get('/', function(req, res, next) {
 
+router.post('/addFriend',function(req,res,next){
+	if(query.addFriends(req.body.yourKey,req.body.friendKey)){
+		res.json({status:"done"});
+	}else{
+		res.json({status:"error"});
 
+	}
+});
+
+router.post('/addGroup',function(req,res,next){
+	if(query.addGroup(req.body.groupName,req.body.desc)){
+		res.json({status:"done"});
+	}else{
+		res.json({status:"error"});
+
+	}
+});
+
+router.post('/addUserToGroup',function(req,res,next){
+	if(query.joinGroup(req.body.userKey,req.body.groupName)){
+		res.json({status:"done"});
+	}else{
+		res.json({status:"error"});
+
+	}
 });
 
 
 
 router.post('/', function(req, res, next) {
-    
-    console.log(req.body.user,req.body.pwd);
-	query.logIn(req.body.user,req.body.pwd,function(resp){
+	query.logIn(req.body.mail,req.body.pwd,function(resp){
         console.log(resp);
 			if(resp.status=="Done"){
-				//res.redirect("logged.html?user="+req.body.user);
-                res.json({status:"logged"});
+                res.json(resp);
 			}else{
-                res.json({status:"NoLogged"})
+                res.json(resp)
 			}
 	});
 
 });
 
 router.post('/add', function(req, res, next) {
-    
-    console.log(req.body.user,req.body.pwd);
-	query.singIn(req.body.user,req.body.pwd,function(resp){
-        console.log(resp);
+    	query.singIn(req.body.user,req.body.pwd,req.body.mail,function(resp){
 			if(resp.status=="Done"){
-				//res.redirect("logged.html?user="+req.body.user);
-                res.json({status:"logged"});
+                res.json(resp);
 			}else{
-                res.json({status:"NoLogged"})
+                res.json(resp)
 			}
 	});
 
 });
 
+
+
+router.post('/changeMail',function(req,res,next){
+query.changeUserMail(req.body.key,req.body.mail);
+res.json({status:"done"});
+
+});
 
 
 

@@ -19,21 +19,31 @@ function getDirectories(srcpath) {
 
 
 
+function makeKey()
+{
+    var text = "";
+    var possible = "ABCDEFGHIJKLMNOPQRSTUVZ1234567890";
 
+    for( var i=0; i < 15; i++ )
+        text += possible.charAt(Math.floor(Math.random() * possible.length));
+
+    return text;
+}
 
 
 
 exports.logIn = function(name,pws,callback){
 
-	var res = db.searchInIndex("User",name);
-	console.log(res);
+	var res = db.searchInIndex("userMail",name);
 	if(res.length>0){
-			console.log(res[0]+UserModel.pwd["name"]);
-			fs.readFile(res[0]+UserModel.pwd["name"],"utf8" ,function (err, data) {
+		console.log(res);
+		var key = res[0].substr(res[0].lastIndexOf("/")+1,res[0].length);
+		console.log(key,"asdas");
+			fs.readFile(res[0]+"/"+UserModel.pwd["name"],"utf8" ,function (err, data) {
 			  if (err) callback({status:"NoCredential"});
 			  	if(data==pws){
 
-			  		callback({status:"Done"});
+			  		callback({status:"Done",key:key});
 
 			  	}else{
 			  		callback({status:"NoCredential"});
@@ -47,12 +57,13 @@ exports.logIn = function(name,pws,callback){
 
 }
 
-exports.singIn = function(name,pws,callback){
-
-    if(db.addTableDB("User",name)!=false){ 
-        
-        db.addTableInfo("User",name,{pwd:pws});
-        callback({status:"Done"});
+exports.singIn = function(name,pws,mail,callback){
+var res = db.searchInIndex("userMail",mail);
+	if(!res){
+		var key  = makeKey();
+		db.addTableDB("User",key);
+        db.addTableInfo("User",key,{pwd:pws,info:JSON.stringify({name:name,mail:mail})});
+        callback({status:"Done",key:key});
                                          
     }else{
         callback({status:"ArleadyExists"});
@@ -72,10 +83,15 @@ exports.getUserFriend= function(name,callback){
 	var res= [];
 	for(var f=0;f<fU.length;f++){
 			var users = getDirectories(path.join(pathh,fU[f]));
+			console.log(users[0],users[1],name)
 			if(users[0]!=name){
-					res.push({name:users[0]});
+					var userDir = fs.readlinkSync(path.join(pathh,fU[f])+"/"+users[0]);
+					var f = fs.readFileSync(userDir+"/"+"Info.json",{encoding:"utf8"});
+					res.push(JSON.parse(f));
 			}else{
-					res.push({name:users[1]});
+					var userDir = fs.readlinkSync(path.join(pathh,fU[f])+"/"+users[1]);
+					var f = fs.readFileSync(userDir+"/"+"Info.json",{encoding:"utf8"});
+					res.push(JSON.parse(f));
 
 			}
 	}
@@ -85,6 +101,22 @@ exports.getUserFriend= function(name,callback){
 exports.searchIndex= function(name,index,callback){
 
 	db.getAllFromKey(index,name,callback);
+}
+
+
+exports.addFriends=function(yourKey,friendKey){
+
+	  if(db.addTableDB("Friendship",yourKey+friendKey)!=false){
+
+	    //for create a friendship 2->n
+	    db.addTableInfo("User",yourKey,{friends:yourKey+friendKey});
+
+	    db.addTableInfo("User",friendKey,{friends:yourKey+friendKey});
+
+	    db.addTableInfo("Friendship",yourKey+friendKey,{user1:yourKey,user2:friendKey});
+	    return true;
+    }
+    return false;
 }
 
 
@@ -101,11 +133,48 @@ exports.getUserGroups= function(name,callback){
 	for(var f=0;f<fU.length;f++){
 			var users = getDirectories(path.join(pathh,fU[f]));
 			if(users[0]!=name){
-					res.push({name:users[0]});
+					var userDir = fs.readlinkSync(path.join(pathh,fU[f])+"/"+users[0]);
+					var f = fs.readFileSync(userDir+"/"+"Info.json",{encoding:"utf8"});
+					res.push(JSON.parse(f));
 			}else{
-					res.push({name:users[1]});
+					var userDir = fs.readlinkSync(path.join(pathh,fU[f])+"/"+users[1]);
+					var f = fs.readFileSync(userDir+"/"+"Info.json",{encoding:"utf8"});
+					res.push(JSON.parse(f));
 
 			}
 	}
 	callback(res);
 }
+
+exports.addGroup = function(groupName,desc){
+
+	var key = makeKey();
+	 if(db.addTableDB("Group",key)){
+	 	db.addTableInfo("Group",key,{info:JSON.stringify({name:groupName,desc:desc})});
+	 	return true;
+	 }else{
+	 	return false;
+	 }
+}
+
+exports.joinGroup = function(userKey,groupName){
+
+	var data = db.searchInIndex("groupName",groupName);
+	var group1 = data[0].substr(data[0].lastIndexOf("/")+1,data[0].length);
+    if(db.addTableDB("UserGroup",userKey+group1)!=false){
+        db.addTableInfo("UserGroup",userKey+group1,{user:userKey,group:group1});
+        db.addTableInfo("Group",group1,{userGroup:userKey+group1});
+        db.addTableInfo("User",userKey,{groups:userKey+group1});
+        return true;
+    }
+    return false;
+}
+
+
+exports.changeUserMail = function(userKey,userMail){
+	db.addTableInfo("User",userKey,{info:JSON.stringify({mail:userMail})});
+}
+
+
+
+

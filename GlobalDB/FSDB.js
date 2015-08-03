@@ -5,10 +5,15 @@ var shasum = crypto.createHash('sha1');
 var wrench = require('wrench'),
     util = require('util');
     var recursive = require('recursive-readdir');
-
+var execFileSync = require('exec-file-sync');
 var moduleList = [];
 var indexesList = [];
 
+function isJson(str) {
+   if(str.indexOf("{")!=-1){
+    return true;
+   }return false;
+}
 String.prototype.replaceAll = function(search, replace)
 {
     //if replace is not sent, return original string otherwise it will
@@ -20,6 +25,17 @@ String.prototype.replaceAll = function(search, replace)
     return this.replace(new RegExp('[' + search + ']', 'g'), replace);
 };
 
+
+var child = require('child_process');
+
+var rmdir = function(directories, callback) {
+    if(typeof directories === 'string') {
+        directories = [directories];
+    }
+    var args = directories;
+    args.unshift('-rf');
+    execFileSync('rm', args);
+};
 
 function generateNum(num){
          shasum = crypto.createHash('sha512');
@@ -80,7 +96,9 @@ function createSymLink(dest,source,type){
 
 
 function addInStringIndex(indexName,path,key){
+    module.exports.makeIndex(indexName,"string");
             var rootCurrIndex = "./indexes/"+indexName+"/";
+            createDir(rootCurrIndex);
             for(i = 0; i < key.length ; i++){
                 rootCurrIndex+=key[i];
                 createDir(rootCurrIndex);
@@ -123,7 +141,9 @@ module.exports = {
             return false;
         }
 
+
         if(module.exports.searchInIndex(name,key)!=false){
+            console.log("arleady exist")
             return false;
         }
 
@@ -148,12 +168,8 @@ module.exports = {
 
                 if(moduleList[name][a]["type"]=="file"){
                    // console.log("File");
-                    fs.open(newRoot+moduleList[name][a]["name"],"w+",function(err,fd){
-
-                        fs.close(fd,function(){
-
-                        });
-                    });
+                    var id = fs.openSync(newRoot+moduleList[name][a]["name"],"w+");
+                    fs.closeSync(id);
 
 
                 }else  if(moduleList[name][a]["type"].indexOf("Array")!=-1){
@@ -173,9 +189,9 @@ module.exports = {
 
             for(var paramKey in params){
                 if(paramKey in mod){
-
-                    //case is an array of PT
                     if(mod[paramKey]["type"].indexOf("PT")!=-1 && mod[paramKey]["type"].indexOf("Array")!=-1){
+                                            console.log("add PT array",key);
+
                      //   console.log("array of pointer");
                         //get PT_ type
                         var type =  mod[paramKey]["type"].substring(mod[paramKey]["type"].indexOf("PT_")+3).replace(" ","");
@@ -186,6 +202,8 @@ module.exports = {
 
                         createSymLink(pathLink,path+"/"+mod[paramKey]["name"]+"/"+params[paramKey],'dir');
                     }else if(mod[paramKey]["type"].indexOf("PT")!=-1){
+                                            console.log("add PT",key);
+
                        // console.log("pointer");
                         //get PT_ type
                         var type =  mod[paramKey]["type"].substring(mod[paramKey]["type"].indexOf("PT_")+3).replace(" ","");
@@ -200,16 +218,57 @@ module.exports = {
 
                     }
                     else if(mod[paramKey]["type"].indexOf("file")!=-1){
-                      //  console.log(path+"/"+mod[paramKey]["name"]);
-                            fs.open(path+"/"+mod[paramKey]["name"],"w+",function(err,fd){
-                                    fs.write(fd,params[paramKey],function(){
+                            var oldContent = fs.readFileSync(path+"/"+mod[paramKey]["name"],{encoding:"utf8"});
+                            var fd = fs.openSync(path+"/"+mod[paramKey]["name"],"w+");
+                            var toWrite = oldContent;
+                            if(toWrite.length!=0){
 
-                                          fs.close(fd,function(){
-                                          });
-                                    });
-                                  
+                                console.log(oldContent);
+                                
+                            }else{
+                                toWrite="";
+                            }
 
-                          });       
+                            console.log(params[paramKey],isJson(params[paramKey]));
+                            if(isJson(params[paramKey])==true){
+                                var io = JSON.parse(params[paramKey]);
+                                console.log(io,"asd");
+                                if(toWrite.length==0){toWrite="{}"}
+                                toWrite = JSON.parse(toWrite);
+
+                                for(var l in io){
+                                    toWrite[l]=io[l];
+
+                                }
+                                toWrite=JSON.stringify(toWrite);
+                            }else{
+                                console.log(params[paramKey])
+                                toWrite=params[paramKey];
+                            }
+
+                            fs.writeSync(fd,toWrite);
+                            fs.closeSync(fd);
+
+                                if(mod[paramKey]["index"]){
+                                    var obj =JSON.parse(params[paramKey]);
+                                    var old=false;
+                                    if(oldContent.length!=0){
+                                           console.log(oldContent,"asd");
+                                           old=JSON.parse(oldContent);
+                                    }         
+                                    for(var i in mod[paramKey]["index"]){
+                                        if(obj[i]!=undefined){
+                                            if(old){
+                                                console.log("UpdateIndex",old[i],obj[i]);
+
+                                                module.exports.updateKeyIndex(mod[paramKey]["index"][i],old[i],obj[i],path);
+                                            }else{
+                                              addInStringIndex(mod[paramKey]["index"][i],path,obj[i]);
+
+                                            }
+                                        }
+                                    }
+                                }         
                     }
 
 
@@ -277,11 +336,8 @@ module.exports = {
                     var allFiles = [];
                      recursive(path,function(err,data){
                             for(var d in data){
-
                                 var realPath = fs.readlinkSync(data[d]);
-
                                  var type = realPath.substr(realPath.indexOf("/"+dbName+"/")+("/"+dbName+"/").length,realPath.length);
-
                                  type = type.substr(0,type.indexOf("/"));
                                  data[d]={path:realPath,type:type};
 
@@ -294,8 +350,45 @@ module.exports = {
                 return false;
 
 
-    }
+    },
+    //modifie the content of a key
+    updateIndexKeyPathLink:function(indexName,key,newPath){
+         var path = "./indexes/"+indexName+"/";
+                for(var i = 0; i < key.length;i++){
+                    path+=key[i]+"/"
+                }
+                path+=key;
+                if(fs.existsSync(path)){
+                        var m = fs.readdirSync(path);
+                        fs.unlinkSync(path+"/"+m[0]);
+                         var name = newPath.split("/").join("-");
+                        path+="/"+name.replace(".","");
+                        createSymLink(newPath,path,"dir");
 
+                }
+
+    },
+    updateKeyIndex:function(indexName,key,newKey,pathLink){
+
+        var path =  "./indexes/"+indexName+"/";
+        if(fs.existsSync(path)){
+        for(var i = 0 ; i < key.length;i++){
+            path+=key[i]+"/";
+             if(fs.existsSync(path)){
+                   var m = fs.readdirSync(path);
+                   if(m.length<=1){
+                    rmdir(path);
+                    path = path.substr(0,path.length-2);
+                    rmdir(path);  
+                   }
+             }else{
+                break;
+             }
+        }
+        }
+        addInStringIndex(indexName, pathLink,newKey)
+    },
+   
 
 
 

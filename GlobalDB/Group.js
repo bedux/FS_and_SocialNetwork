@@ -13,7 +13,7 @@ var Group_mod = {
 
     userGroup:{name:"users",type:"Array PT_UserGroup"},
 
-    info:{name:"info.json",type:"file"}
+    info:{name:"Info.json",type:"file",index:{name:"groupName"}}
 
 };
 
