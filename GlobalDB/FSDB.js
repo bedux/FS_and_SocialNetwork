@@ -63,8 +63,6 @@ function createDir(name,del){
 
 function createDirWithBucket(path,key){
      //   console.log(" createDirWithBucket ",key,path)
-
-
         var num =generateNum(key)
        // console.log(num);
         if(!fs.existsSync(path+num)){
@@ -80,14 +78,10 @@ function createDirWithBucket(path,key){
 
 //pass relative path start with ./
 function createSymLink(dest,source,type){
-
     var absolutePath = __dirname.replace("/GlobalDB","/");
     source=source.replace("./",absolutePath);
     dest=dest.replace("./",absolutePath);
-           // console.log(dest,source);
-
     if(fs.existsSync(source)){
-
     }else {
         fs.symlinkSync(dest, source, type);
     }
@@ -111,13 +105,10 @@ function addInStringIndex(indexName,path,key){
             createSymLink(path,rootCurrIndex,"dir");
             }
 
-
 }
 
 function addInIntIndex(indexName,path,key){
-            var rootCurrIndex = "./indexes/"+indexName+"/";
-
-    
+    var rootCurrIndex = "./indexes/"+indexName+"/";    
 }
 
 var dbName = "NoName";
@@ -140,7 +131,6 @@ module.exports = {
             throw "Invalid Module Name";
             return false;
         }
-
 
         if(module.exports.searchInIndex(name,key)!=false){
             console.log("arleady exist")
@@ -178,7 +168,6 @@ module.exports = {
             }
         }
         return newRoot;
-
     },
 
     addTableInfo:function(name,key,params){
@@ -286,7 +275,6 @@ module.exports = {
                 indexesList[indexName]=type;
                 createDir("./indexes/"+indexName);
             }
-
     },
 
     searchInIndex:function(indexName,key){
@@ -305,9 +293,6 @@ module.exports = {
                     return m;
                 }
                 return false;
-
-            
-
     },
     //let's say that the value is the path to the directory wich contain the actual value
     //get also the key to insert. you could add a key like ciao with inside the link of something call Gunio. Each node has a concrete dir with contain a link to the dir. The key doesn't be unique!
