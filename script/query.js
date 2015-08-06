@@ -81,17 +81,24 @@ exports.getUserFriend= function(name,callback){
 	var pathh = res[0]+UserModel.friends["name"];
 	var fU = fs.readdirSync(pathh);
 	var res= [];
+	console.log(fU);
 	for(var f=0;f<fU.length;f++){
 			var users = getDirectories(path.join(pathh,fU[f]));
 			console.log(users[0],users[1],name)
 			if(users[0]!=name){
 					var userDir = fs.readlinkSync(path.join(pathh,fU[f])+"/"+users[0]);
-					var f = fs.readFileSync(userDir+"/"+"Info.json",{encoding:"utf8"});
-					res.push(JSON.parse(f));
+					var fl = fs.readFileSync(userDir+"/"+"Info.json",{encoding:"utf8"});
+					fl= JSON.parse(fl);
+					fl["key"]=users[0];
+					res.push(fl);
 			}else{
 					var userDir = fs.readlinkSync(path.join(pathh,fU[f])+"/"+users[1]);
-					var f = fs.readFileSync(userDir+"/"+"Info.json",{encoding:"utf8"});
-					res.push(JSON.parse(f));
+					var fl = fs.readFileSync(userDir+"/"+"Info.json",{encoding:"utf8"});
+					fl= JSON.parse(fl);
+
+					fl["key"]=users[1];
+
+					res.push(fl);
 
 			}
 	}

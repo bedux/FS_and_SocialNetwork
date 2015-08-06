@@ -174,6 +174,7 @@ module.exports = {
 
             //compute path of the table
            var mod = moduleList[name];
+           // console.log(name,key,params);
            var path =  moduleList[name].root+computePath(key);
 
             for(var paramKey in params){
@@ -212,16 +213,13 @@ module.exports = {
                             var toWrite = oldContent;
                             if(toWrite.length!=0){
 
-                                console.log(oldContent);
                                 
                             }else{
                                 toWrite="";
                             }
 
-                            console.log(params[paramKey],isJson(params[paramKey]));
                             if(isJson(params[paramKey])==true){
                                 var io = JSON.parse(params[paramKey]);
-                                console.log(io,"asd");
                                 if(toWrite.length==0){toWrite="{}"}
                                 toWrite = JSON.parse(toWrite);
 
@@ -231,7 +229,6 @@ module.exports = {
                                 }
                                 toWrite=JSON.stringify(toWrite);
                             }else{
-                                console.log(params[paramKey])
                                 toWrite=params[paramKey];
                             }
 
@@ -242,7 +239,6 @@ module.exports = {
                                     var obj =JSON.parse(params[paramKey]);
                                     var old=false;
                                     if(oldContent.length!=0){
-                                           console.log(oldContent,"asd");
                                            old=JSON.parse(oldContent);
                                     }         
                                     for(var i in mod[paramKey]["index"]){

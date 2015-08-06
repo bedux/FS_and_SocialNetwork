@@ -18,7 +18,7 @@ add a new group
 POST 127.0.0.1:3000/login/addGroup  param:groupName,desc 
 
 add a new friends
-POST 127.0.0.1:3000/login/addFriend param: yourKey,friendsKey
+POST 127.0.0.1:3000/login/addFriend param: yourKey,friendKey
 
 add user to group 
 POST 127.0.0.1:3000/login/addUserToGroup param: userKey, groupName
